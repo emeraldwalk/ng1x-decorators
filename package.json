@@ -1,0 +1,23 @@
+{
+  "name": "ng1x-decorators",
+  "version": "1.0.0",
+  "description": "Brining Angular 2 patterns to 1.x.",
+  "main": "index.js",
+  "dependencies": {
+    "@types/angular": "^1.5.20"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emeraldwalk/ng1x-decorators.git"
+  },
+  "author": "Emeraldwalk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emeraldwalk/ng1x-decorators/issues"
+  },
+  "homepage": "https://github.com/emeraldwalk/ng1x-decorators#readme"
+}
