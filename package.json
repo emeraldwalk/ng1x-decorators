@@ -1,8 +1,9 @@
 {
   "name": "ng1x-decorators",
   "version": "1.0.0",
-  "description": "Brining Angular 2 patterns to 1.x.",
-  "main": "index.js",
+  "description": "Bringing Angular 2 patterns to 1.x.",
+  "main": "dist/decorators.js",
+  "types": "dist/decorators.d.ts",
   "dependencies": {
     "@types/angular": "^1.5.20"
   },
