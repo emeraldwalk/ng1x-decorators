@@ -5,7 +5,9 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "rootDir": "src",
-        "outDir": "dist"
-    }
+        "outDir": "dist/"
+    },
+    "files": [
+        "src/decorators.ts"
+    ]
 }

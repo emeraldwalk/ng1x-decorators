@@ -20,10 +20,9 @@ export type IModuleConfig = {
     services?: Array<IInjectable>
 };
 
-export type IComponentConfig = {
-    name: string,
-    config: ng.IComponentOptions
-};
+export type IComponentConfig = ng.IComponentOptions & {
+    selector: string;
+}
 
 /**
  * Extend component constructors with configuration details.
@@ -60,8 +59,8 @@ export function ngModule(config: IModuleConfig): ClassDecorator {
         // register our components
         for (let component of config.components || []) {
             moduleInstance.component(
-                component.$componentConfig.name,
-                component.$componentConfig.config);
+                dashToCamelCase(component.$componentConfig.selector),
+                component.$componentConfig);
         }
 
         // register our services
@@ -92,26 +91,36 @@ export function service(injectAs: string): ClassDecorator {
 }
 
 /**
+ * Convert a camelCase string to dash-case.
+ */
+function camelToDashCase(text: string): string {
+    return text.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+/**
+ * Convert a dash-case string to camelCase.
+ */
+function dashToCamelCase(text: string): string {
+    return text.replace(/(-)(.)/g, (match, dash, char: string) => char.toUpperCase());
+}
+
+/**
  * Decorator for annotating component controllers with options
  * that will later be used to register to a module.
  */
-export function component(componentName: string, config: ng.IComponentOptions): ClassDecorator {
+export function component(config: IComponentConfig): ClassDecorator {
     return function componentDecorator(componentConstructor: IComponentConstructor) {
         config.controller = componentConstructor;
 
         let bindings =
             componentConstructor.$componentConfig &&
-            componentConstructor.$componentConfig.config &&
-            componentConstructor.$componentConfig.config.bindings;
+            componentConstructor.$componentConfig.bindings;
 
         if (bindings) {
             config.bindings = bindings;
         }
 
-        componentConstructor.$componentConfig = {
-            name: componentName,
-            config
-        };
+        componentConstructor.$componentConfig = config;
     };
 }
 
@@ -121,9 +130,9 @@ export function component(componentName: string, config: ng.IComponentOptions): 
 function bind(binding: string): PropertyDecorator {
     return function bindingDecorator(target: { constructor: { $componentConfig?: IComponentConfig } }, propertyKey: string) {
         let bindings = (target.constructor.$componentConfig = target.constructor.$componentConfig || {
-            name: undefined,
-            config: { bindings: {} }
-        }).config.bindings;
+            selector: undefined,
+            bindings: {}
+        }).bindings;
         bindings[propertyKey] = binding;
     };
 }

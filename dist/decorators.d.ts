@@ -16,9 +16,8 @@ export declare type IModuleConfig = {
     components?: Array<IComponentConstructor>;
     services?: Array<IInjectable>;
 };
-export declare type IComponentConfig = {
-    name: string;
-    config: ng.IComponentOptions;
+export declare type IComponentConfig = ng.IComponentOptions & {
+    selector: string;
 };
 /**
  * Extend component constructors with configuration details.
@@ -43,7 +42,7 @@ export declare function service(injectAs: string): ClassDecorator;
  * Decorator for annotating component controllers with options
  * that will later be used to register to a module.
  */
-export declare function component(componentName: string, config: ng.IComponentOptions): ClassDecorator;
+export declare function component(config: IComponentConfig): ClassDecorator;
 /**
  * Decorator for binding component input properties.
  */

@@ -26,7 +26,7 @@ function ngModule(config) {
         // register our components
         for (var _d = 0, _e = config.components || []; _d < _e.length; _d++) {
             var component_1 = _e[_d];
-            moduleInstance.component(component_1.$componentConfig.name, component_1.$componentConfig.config);
+            moduleInstance.component(dashToCamelCase(component_1.$componentConfig.selector), component_1.$componentConfig);
         }
         // register our services
         for (var _f = 0, _g = config.services || []; _f < _g.length; _f++) {
@@ -60,22 +60,30 @@ function service(injectAs) {
 }
 exports.service = service;
 /**
+ * Convert a camelCase string to dash-case.
+ */
+function camelToDashCase(text) {
+    return text.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+/**
+ * Convert a dash-case string to camelCase.
+ */
+function dashToCamelCase(text) {
+    return text.replace(/(-)(.)/g, function (match, dash, char) { return char.toUpperCase(); });
+}
+/**
  * Decorator for annotating component controllers with options
  * that will later be used to register to a module.
  */
-function component(componentName, config) {
+function component(config) {
     return function componentDecorator(componentConstructor) {
         config.controller = componentConstructor;
         var bindings = componentConstructor.$componentConfig &&
-            componentConstructor.$componentConfig.config &&
-            componentConstructor.$componentConfig.config.bindings;
+            componentConstructor.$componentConfig.bindings;
         if (bindings) {
             config.bindings = bindings;
         }
-        componentConstructor.$componentConfig = {
-            name: componentName,
-            config: config
-        };
+        componentConstructor.$componentConfig = config;
     };
 }
 exports.component = component;
@@ -85,9 +93,9 @@ exports.component = component;
 function bind(binding) {
     return function bindingDecorator(target, propertyKey) {
         var bindings = (target.constructor.$componentConfig = target.constructor.$componentConfig || {
-            name: undefined,
-            config: { bindings: {} }
-        }).config.bindings;
+            selector: undefined,
+            bindings: {}
+        }).bindings;
         bindings[propertyKey] = binding;
     };
 }
